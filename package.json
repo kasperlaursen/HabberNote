@@ -1,0 +1,31 @@
+{
+  "name": "habbernote",
+  "version": "0.0.1",
+  "description": "A small Markdown notes app in the MacOs Tray icon!",
+  "main": "electron.ts",
+  "scripts": {
+    "build": "webpack --config ./webpack.config.js",
+    "start": "npm run build && electron ./dist/electron.js"
+  },
+  "author": "Kasper Laursen",
+  "license": "ISC",
+  "dependencies": {
+    "@types/styled-components": "^5.0.1",
+    "auto-launch": "^5.0.5",
+    "electron-reload": "^1.5.0",
+    "styled-components": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.31",
+    "@types/react-dom": "^16.9.6",
+    "electron": "^8.2.0",
+    "electron-packager": "^14.2.1",
+    "html-webpack-plugin": "^4.0.4",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "ts-loader": "^6.2.2",
+    "typescript": "^3.8.3",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  }
+}
