@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import {
+  formatTextToMarkdown,
+  formatMarkdownToText
+} from "./markdownFormatter";
 
 export interface NoteComponentProps {}
 
@@ -15,27 +19,35 @@ const Note = styled.div`
 `;
 
 const NoteComponent = (props: NoteComponentProps) => {
-  const defaultNote = `# Titel 
+
+  const defaultNote: string = formatTextToMarkdown(`# Titel 
 
 ## Header
 
 **Dette skal være fed tekst!**
+__Dette skal være fed tekst!__
 
-__Dette skal være kusiv!__`;
+*Dette skal være kusiv!*
+_Dette skal være kusiv!_
+
+## Header
+
+# Title`);
 
   const [note, setNote] = useState(defaultNote);
 
   const handleChange = (event: React.FormEvent<HTMLDivElement>) => {
-    const inputText = event.currentTarget.innerText;
-    const regex = /(#+)(.*)/
-    let mdText = inputText.replace(regex, `<b>${inputText.match(regex).join('')}</b>`);
-    setNote(mdText);
+    const inputText: string = event.currentTarget.innerText;
+    const cleanText: string = formatMarkdownToText(inputText);
+    setNote(formatTextToMarkdown(cleanText));
   };
 
   return (
-    <Note contentEditable="true" onInput={handleChange}>
-      {note}
-    </Note>
+    <Note
+      contentEditable="true"
+      onInput={handleChange}
+      dangerouslySetInnerHTML={{ __html: note }}
+    ></Note>
   );
 };
 
