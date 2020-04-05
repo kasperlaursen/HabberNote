@@ -6,40 +6,35 @@ export interface markdownLookupObject {
 
 const markdownLookup: markdownLookupObject[] = [
   {
-    regex: /(#+)(.*)/,
+    regex: /(#+)(.*)/g,
     startTag: "<b>",
-    endTag: "</b>"
+    endTag: "</b>",
   },
   {
-    regex: /(##+)(.*)/,
+    regex: /(##+)(.*)/g,
     startTag: "<b>",
-    endTag: "</b>"
+    endTag: "</b>",
   },
   {
-    regex: /(\*\*|__)(.*?)\1/,
+    regex: /(\*\*|__)(.*?)\1/g,
     startTag: "<b>",
-    endTag: "</b>"
-  }
+    endTag: "</b>",
+  },
 ];
 
 export const formatTextToMarkdown = (text: string): string => {
-  console.log("formatTextToMarkdown", text);
   let mdText: string = text;
   // Loop over markdown loop, to format all entries from the string
-  markdownLookup.forEach(mdObj => {
+  markdownLookup.forEach((mdObj) => {
     const { regex, startTag, endTag } = mdObj;
-    const matches = mdText.match(regex) ? mdText.match(regex)[0] : "";
-    console.log(matches);
-    mdText = mdText.replace(regex, `${startTag}${matches}${endTag}`);
+    mdText = mdText.replace(regex, (match) => `${startTag}${match}${endTag}`);
   });
-  console.log(mdText);
   return mdText;
 };
 
 export const formatMarkdownToText = (mdText: string): string => {
-  console.log("formatMarkdownToText", mdText);
   const replaceRegex: string = markdownLookup
-    .map(mdObj => {
+    .map((mdObj) => {
       const escapeRegex = "/[.*+?^${}()|[]\\]/g";
       const startTag = mdObj.startTag.replace(escapeRegex, "\\$&");
       const endTag = mdObj.endTag.replace(escapeRegex, "\\$&");
