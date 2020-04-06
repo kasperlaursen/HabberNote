@@ -8,7 +8,8 @@ import * as fs from "fs";
 
 import "./styles.css";
 
-const filePath = "/Users/kasperlaursen/Documents/HabberNote/test.md";
+const filePath = "/Users/kla/Documents/HabberNote/test.md";
+const folderPath = "/Users/kla/Documents/HabberNote/";
 
 const bgColor = `rgba(255, 255, 255, .9)`;
 const windowWidth = 320;
@@ -42,21 +43,48 @@ const TrayAppContainer = styled.div`
   }
 `;
 
-const Index = () => {
-  const [file, setFile] = useState('# Title');
-   
-  fs.readFile(filePath, { encoding: "utf8" }, (err, data) => {
-    if (err) {
-      console.log('Error');
-    } else {
-      setFile(data);
-    }
+interface IFile {
+  name: string;
+  data: string;
+}
+
+const getFilesInDirectory = (setFiles) => {
+  fs.readdir(folderPath, (err, files) => {
+    if (err)
+      return console.log(`Unable to scan directory '${folderPath}': `, err);
+    setFiles(files);
   });
+};
+
+const getFileByPath = (setOpenNote) => {
+  fs.readFile(filePath, { encoding: "utf8" }, (err, data) => {
+    if (err) return console.log(`Unable to read file '${filePath}': `, err);
+    setOpenNote({ name: "test.md", data });
+  });
+};
+
+const saveNote = (newData: string) => {
+  console.log("Save File");
+  fs.writeFile(filePath, newData, "utf8", function (err) {
+    if (err) return console.log(err);
+  });
+};
+const Index = () => {
+  const [openNote, setOpenNote] = useState<IFile>();
+  const [files, setFiles] = useState<string[]>();
+
+  if(!openNote) {
+    getFileByPath(setOpenNote);
+  }
+
+  if(!files) {
+    getFilesInDirectory(setFiles);
+  }
 
   return (
     <React.Fragment>
       <TrayAppContainer>
-        <NoteComponent defaultValue={file} />
+        <NoteComponent defaultValue={openNote?.data || '# Default'} onNoteUpdate={saveNote} />
         <MenuComponent />
       </TrayAppContainer>
     </React.Fragment>

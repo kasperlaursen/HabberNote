@@ -26,6 +26,7 @@ const createWindow = () => {
       nodeIntegration: true,
     },
   });
+  window.webContents.openDevTools()
 
   // and load the index.html of the app.
   window.loadFile("index.html");

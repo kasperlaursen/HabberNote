@@ -9,6 +9,7 @@ import { getCharacterOffset, setCaretPosition } from "./cursorHandler";
 
 export interface NoteComponentProps {
   defaultValue: string;
+  onNoteUpdate: (newData: string) => void;
 }
 
 const Note = styled.div`
@@ -24,12 +25,11 @@ const Note = styled.div`
   overflow-x: hidden;
 `;
 
-const NoteComponent = (props: NoteComponentProps) => {
-  // TODO: Get defaultNote from Props (form the filesystem)
-  const defaultNote: string = formatTextToMarkdown(props.defaultValue);
+let counter: number = 0;
 
+const NoteComponent = (props: NoteComponentProps) => {
   // State
-  const [note, setNote] = useState(defaultNote);
+  const [note, setNote] = useState(formatTextToMarkdown(""));
   const [cursorPos, setCursorPos] = useState(0);
   const [wasEnter, setWasEnter] = useState(false);
 
@@ -38,10 +38,18 @@ const NoteComponent = (props: NoteComponentProps) => {
 
   // Whenever the note state changes, set the cursor position in the text field
   useEffect(() => {
-      // Since the state has benne updated, set the cursor to the position from state
-      setCaretPosition(noteFieldRef.current, cursorPos);
+    // Since the state has been updated, set the cursor to the position from state
+    setCaretPosition(noteFieldRef.current, cursorPos);
+    counter++;
+    if (counter > 10) {
+      props.onNoteUpdate(noteFieldRef.current.innerText);
+      counter = 0;
+    }
   }, [note]);
 
+  useEffect(() => {
+    if (props.defaultValue) setNote(formatTextToMarkdown(props.defaultValue));
+  }, [props.defaultValue]);
   /**
    * This function handles the formatting of the text, whenever a character is added/removed
    * @param event The react form event for onInput
@@ -60,7 +68,7 @@ const NoteComponent = (props: NoteComponentProps) => {
    * @param event The react keyboard event triggered
    */
   const handleRetunKey = (event: React.KeyboardEvent<HTMLDivElement>) => {
-     // If the pressed key was enter, and shift was not held
+    // If the pressed key was enter, and shift was not held
     if (event.key === "Enter" && event.shiftKey == false) {
       // Set the enter flag to true in state
       setWasEnter(true);
