@@ -1,0 +1,43 @@
+/*
+* This file contains the global styles for the application
+* Any component specific styles are defined in the component using Styled Components!
+*/
+
+* {
+  border: 0;
+  margin: 0;
+  box-sizing: border-box;
+  outline: none;
+}
+
+*:focus {
+  outline: none;
+}
+
+body {
+  font-family: monospace;
+}
+
+code {
+  background-color: #d8f8d0;
+  border: 1px solid #34a852;
+  color: rgba(0, 0, 0, 0.8);
+  font-style: italic;
+  padding: 0 3px;
+  border-radius: 3px;
+}
+
+.title {
+    font-size: 1.3em;
+    opacity: .9;
+}
+
+.h1 {
+    font-size: 1.1em;
+    opacity: .8;
+}
+
+.h2 {
+    font-size: 1.1em;
+    opacity: .7;
+}

@@ -1,17 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import styled, { createGlobalStyle } from "styled-components";
+import styled from "styled-components";
 import NoteComponent from "./components/note";
 import MenuComponent from "./components/menu";
 
-const bgColor = `rgba(255, 255, 255, .7)`;
-const windowWidth = 320;
+import * as fs from "fs";
 
-const GlobalStyle = createGlobalStyle`
-  * { border: 0; margin: 0; box-sizing: border-box; outline: none;}
-  *:focus { outline: none; }
-  body {  font-family: monospace; }
-`;
+import "./styles.css";
+
+const filePath = "/Users/kasperlaursen/Documents/HabberNote/test.md";
+
+const bgColor = `rgba(255, 255, 255, .9)`;
+const windowWidth = 320;
 
 const TrayAppContainer = styled.div`
   position: relative;
@@ -23,7 +23,7 @@ const TrayAppContainer = styled.div`
   box-sizing: border-box;
 
   background-color: ${bgColor};
-  border-radius: 10px;
+  border-radius: 5px;
 
   display: flex;
   flex-direction: column;
@@ -43,13 +43,22 @@ const TrayAppContainer = styled.div`
 `;
 
 const Index = () => {
+  const [file, setFile] = useState('# Title');
+   
+  fs.readFile(filePath, { encoding: "utf8" }, (err, data) => {
+    if (err) {
+      console.log('Error');
+    } else {
+      setFile(data);
+    }
+  });
+
   return (
     <React.Fragment>
       <TrayAppContainer>
-        <NoteComponent />
+        <NoteComponent defaultValue={file} />
         <MenuComponent />
       </TrayAppContainer>
-      <GlobalStyle />
     </React.Fragment>
   );
 };

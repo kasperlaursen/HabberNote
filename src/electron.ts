@@ -21,7 +21,10 @@ const createWindow = () => {
     frame: false,
     fullscreenable: false,
     resizable: false,
-    transparent: true
+    transparent: true,
+    webPreferences: {
+      nodeIntegration: true,
+    },
   });
 
   // and load the index.html of the app.
@@ -36,13 +39,12 @@ const createWindow = () => {
 };
 
 const createTray = () => {
-
   const iconPath = path.join(__dirname, "icon.png");
   let trayIcon = nativeImage.createFromPath(iconPath);
 
   tray = new Tray(trayIcon);
 
-  tray.on("click", event => {
+  tray.on("click", (event) => {
     toggleWindow();
   });
 };

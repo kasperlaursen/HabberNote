@@ -6,20 +6,53 @@ export interface markdownLookupObject {
 
 const markdownLookup: markdownLookupObject[] = [
   {
-    regex: /(#+)(.*)/g,
-    startTag: "<b>",
+    // Title
+    regex: /(?<!#)#(?!#)(.*)/g,
+    startTag: "<b class='title'>",
     endTag: "</b>",
   },
   {
-    regex: /(##+)(.*)/g,
-    startTag: "<b>",
+    // Header 2
+    regex: /(?<!#)##(?!#)(.*)/g,
+    startTag: "<b class='h1'>",
     endTag: "</b>",
   },
   {
+    // Header 3+
+    regex: /(###+)(.*)/g,
+    startTag: "<b class='h2'>",
+    endTag: "</b>",
+  },
+  {
+    // Bold
     regex: /(\*\*|__)(.*?)\1/g,
     startTag: "<b>",
     endTag: "</b>",
   },
+  {
+    // Italic
+    regex: /((?<!_)_(?!_)|(?<!\*)\*(?!\*))(.*?)\1/g,
+    startTag: "<i>",
+    endTag: "</i>",
+  },
+  {
+    // Code
+    regex: /`(.*?)`/g,
+    startTag: "<code>",
+    endTag: "</code>",
+  },
+  {
+    // Bullet list Item
+    regex: /\n\*(.*)/g,
+    startTag: "<span class='bullet'>",
+    endTag: "</span>",
+  },
+  {
+    // Number List item
+    regex: /\n[0-9]+\.(.*)/g,
+    startTag: "<span class='number'>",
+    endTag: "</span>",
+  }
 ];
 
 export const formatTextToMarkdown = (text: string): string => {

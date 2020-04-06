@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = [
   {
@@ -10,14 +11,14 @@ module.exports = [
         {
           test: /\.ts$/,
           include: /src/,
-          use: [{ loader: "ts-loader" }]
-        }
-      ]
+          use: [{ loader: "ts-loader" }],
+        },
+      ],
     },
     output: {
       path: __dirname + "/dist",
-      filename: "electron.js"
-    }
+      filename: "electron.js",
+    },
   },
   {
     mode: "development",
@@ -25,25 +26,30 @@ module.exports = [
     target: "electron-renderer",
     devtool: "source-map",
     resolve: {
-        extensions: ['.js', '.jsx', '.json', '.ts', '.tsx']
+      extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
     },
     module: {
       rules: [
         {
+          test: /\.css$/i,
+          use: [MiniCssExtractPlugin.loader, "css-loader"],
+        },
+        {
           test: /\.(ts|tsx)$/,
           include: /src/,
-          use: [{ loader: "ts-loader" }]
-        }
-      ]
+          use: [{ loader: "ts-loader" }],
+        },
+      ],
     },
     output: {
       path: __dirname + "/dist",
-      filename: "react.js"
+      filename: "react.js",
     },
     plugins: [
       new HtmlWebpackPlugin({
-        template: "./src/index.html"
-      })
-    ]
-  }
+        template: "./src/index.html",
+      }),
+      new MiniCssExtractPlugin(),
+    ],
+  },
 ];
