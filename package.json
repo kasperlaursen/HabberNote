@@ -10,9 +10,11 @@
   "author": "Kasper Laursen",
   "license": "ISC",
   "dependencies": {
+    "@types/react-icons": "^3.0.0",
     "@types/styled-components": "^5.0.1",
     "auto-launch": "^5.0.5",
     "electron-reload": "^1.5.0",
+    "react-icons": "^3.9.0",
     "styled-components": "^5.0.1"
   },
   "devDependencies": {

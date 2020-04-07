@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import styled from "styled-components";
 import {
   formatTextToMarkdown,
   formatMarkdownToText,
-} from "./markdownFormatter";
+} from "../helpers/markdownFormatter";
 
-import { getCharacterOffset, setCaretPosition } from "./cursorHandler";
+import { getCharacterOffset, setCaretPosition } from "../helpers/cursorHandler";
 
 export interface NoteComponentProps {
   defaultValue: string;
@@ -25,7 +25,7 @@ const Note = styled.div`
   overflow-x: hidden;
 `;
 
-let counter: number = 0;
+const saveDelay: number = 2 * 1000;
 
 const NoteComponent = (props: NoteComponentProps) => {
   // State
@@ -33,6 +33,12 @@ const NoteComponent = (props: NoteComponentProps) => {
   const [cursorPos, setCursorPos] = useState(0);
   const [wasEnter, setWasEnter] = useState(false);
 
+  useEffect(() => {
+    const saveInterval = setInterval(() => {
+      console.log("This will run every second!");
+    }, saveDelay);
+    return () => clearInterval(saveInterval);
+  }, []);
   // Reference to the Editable div, used to set the cursor position later!
   let noteFieldRef: React.RefObject<HTMLDivElement> = React.createRef();
 
@@ -40,11 +46,11 @@ const NoteComponent = (props: NoteComponentProps) => {
   useEffect(() => {
     // Since the state has been updated, set the cursor to the position from state
     setCaretPosition(noteFieldRef.current, cursorPos);
-    counter++;
-    if (counter > 10) {
-      props.onNoteUpdate(noteFieldRef.current.innerText);
-      counter = 0;
-    }
+    // counter++;
+    // if (counter > 10) {
+    //   props.onNoteUpdate(noteFieldRef.current.innerText);
+    //   counter = 0;
+    // }
   }, [note]);
 
   useEffect(() => {
