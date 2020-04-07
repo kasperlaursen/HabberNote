@@ -6,7 +6,11 @@ import MenuComponent from "./components/menu";
 
 import "./styles.css";
 
-import { getFileByPath, getFilesInDirectory, saveNote } from "./helpers/fileHandler";
+import {
+  getFileByPath,
+  getFilesInDirectory,
+  saveNote,
+} from "./helpers/fileHandler";
 
 const bgColor = `rgba(255, 255, 255, .9)`;
 const windowWidth = 320;
@@ -48,22 +52,48 @@ interface IFile {
 const Index = () => {
   const [openNote, setOpenNote] = useState<IFile>();
   const [files, setFiles] = useState<string[]>();
+  const [folderPath, setFolderPath] = useState<string>(
+    localStorage.getItem("folderPath")
+  );
 
-  if(!openNote) {
-    getFileByPath(setOpenNote);
+  if (!files && folderPath) {
+    getFilesInDirectory(folderPath).then(
+      (files: string[]) => {
+        console.log("!files && folderPath", files);
+        setFiles(files);
+      },
+      (err) => {
+        console.log("Error:", err);
+      }
+    );
   }
 
-  if(!files) {
-    getFilesInDirectory(setFiles);
-  }
+  const handlePathUpdate = (newPath: string) => {
+    setFolderPath(newPath);
+    localStorage.setItem("folderPath", newPath);
+    getFilesInDirectory(newPath).then(
+      (files: string[]) => {
+        console.log("handlePathUpdate", files);
+        setFiles(files);
+      },
+      (err) => {
+        console.log("Error:", err);
+      }
+    );
+  };
+
+  const handleUpdateNote = (newData: string) => {
+    if (folderPath && openNote) saveNote(`${folderPath}${openNote}`, newData);
+  };
 
   return (
-    <React.Fragment>
-      <TrayAppContainer>
-        <NoteComponent defaultValue={openNote?.data || '# Default'} onNoteUpdate={saveNote} />
-        <MenuComponent />
-      </TrayAppContainer>
-    </React.Fragment>
+    <TrayAppContainer>
+      <NoteComponent
+        defaultValue={openNote?.data || "# Default"}
+        onNoteUpdate={handleUpdateNote}
+      />
+      <MenuComponent onPathUpdated={handlePathUpdate} />
+    </TrayAppContainer>
   );
 };
 

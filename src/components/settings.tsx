@@ -68,8 +68,10 @@ const SettingsComponent = (props: SettingsComponentProps) => {
   const handleKeypressInInput = (
     event: React.KeyboardEvent<HTMLInputElement>
   ) => {
-    if (event.key === "Enter") setIsActive(false);
-    onPathUpdated(inputRef?.current?.value);
+    if (event.key === "Enter") {
+      setIsActive(false);
+      onPathUpdated(inputRef?.current?.value);
+    }
   };
 
   const handleSettingsClick = (

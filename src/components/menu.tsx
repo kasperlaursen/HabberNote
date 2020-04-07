@@ -1,7 +1,9 @@
 import * as React from "react";
 import styled from "styled-components";
 import SettingsComponent from "./settings";
-export interface MenuComponentProps {}
+export interface MenuComponentProps {
+  onPathUpdated: (newPath: string) => void;
+}
 
 const Menu = styled.div`
   padding: 10px;
@@ -10,9 +12,10 @@ const Menu = styled.div`
 `;
 
 const MenuComponent = (props: MenuComponentProps) => {
+  const { onPathUpdated } = props;
   return (
     <Menu>
-      <SettingsComponent />
+      <SettingsComponent onPathUpdated={onPathUpdated} />
     </Menu>
   );
 };
