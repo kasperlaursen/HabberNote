@@ -27,18 +27,12 @@ const Note = styled.div`
 
 const saveDelay: number = 2 * 1000;
 
-const NoteComponent = (props: NoteComponentProps) => {
+const NoteComponent = ({ defaultValue, onNoteUpdate }: NoteComponentProps) => {
   // State
   const [note, setNote] = useState(formatTextToMarkdown(""));
   const [cursorPos, setCursorPos] = useState(0);
   const [wasEnter, setWasEnter] = useState(false);
 
-  useEffect(() => {
-    const saveInterval = setInterval(() => {
-      console.log("This will run every second!");
-    }, saveDelay);
-    return () => clearInterval(saveInterval);
-  }, []);
   // Reference to the Editable div, used to set the cursor position later!
   let noteFieldRef: React.RefObject<HTMLDivElement> = React.createRef();
 
@@ -46,16 +40,17 @@ const NoteComponent = (props: NoteComponentProps) => {
   useEffect(() => {
     // Since the state has been updated, set the cursor to the position from state
     setCaretPosition(noteFieldRef.current, cursorPos);
-    // counter++;
-    // if (counter > 10) {
-    //   props.onNoteUpdate(noteFieldRef.current.innerText);
-    //   counter = 0;
-    // }
+    const saveTimeout = setTimeout(() => {
+      const newNoteText: string = noteFieldRef.current.innerText;
+      console.log("Saving", newNoteText);
+      onNoteUpdate(newNoteText);
+    }, saveDelay);
+    return () => clearTimeout(saveTimeout);
   }, [note]);
 
   useEffect(() => {
-    if (props.defaultValue) setNote(formatTextToMarkdown(props.defaultValue));
-  }, [props.defaultValue]);
+    if (defaultValue) setNote(formatTextToMarkdown(defaultValue));
+  }, [defaultValue]);
   /**
    * This function handles the formatting of the text, whenever a character is added/removed
    * @param event The react form event for onInput
@@ -73,7 +68,7 @@ const NoteComponent = (props: NoteComponentProps) => {
    * This flag is then used to fix the cursor position after the markdown formatter is done.
    * @param event The react keyboard event triggered
    */
-  const handleRetunKey = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleReturnKey = (event: React.KeyboardEvent<HTMLDivElement>) => {
     // If the pressed key was enter, and shift was not held
     if (event.key === "Enter" && event.shiftKey == false) {
       // Set the enter flag to true in state
@@ -84,7 +79,7 @@ const NoteComponent = (props: NoteComponentProps) => {
   return (
     <Note
       ref={noteFieldRef}
-      onKeyPress={handleRetunKey}
+      onKeyPress={handleReturnKey}
       contentEditable="true"
       onInput={handleChange}
       dangerouslySetInnerHTML={{ __html: note }}

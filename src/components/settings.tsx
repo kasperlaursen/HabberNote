@@ -2,6 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 import { FiSettings } from "react-icons/fi";
 export interface SettingsComponentProps {
+  defaultPath: string;
   onPathUpdated: (newPath: string) => void;
 }
 
@@ -59,8 +60,10 @@ const StyledFiSettings = styled(FiSettings)`
   transition: transform 0.5s, color 0.3s ease-in-out;
 `;
 
-const SettingsComponent = (props: SettingsComponentProps) => {
-  const { onPathUpdated } = props;
+const SettingsComponent = ({
+  defaultPath,
+  onPathUpdated,
+}: SettingsComponentProps) => {
   const [isActive, setIsActive] = React.useState(false);
 
   const inputRef: React.RefObject<HTMLInputElement> = React.createRef();
@@ -91,6 +94,7 @@ const SettingsComponent = (props: SettingsComponentProps) => {
         onKeyPress={handleKeypressInInput}
         ref={inputRef}
         isActive={isActive}
+        defaultValue={defaultPath}
       />
     </SettingsContainer>
   );

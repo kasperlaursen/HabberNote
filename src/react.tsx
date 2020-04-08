@@ -10,6 +10,7 @@ import {
   getFileByPath,
   getFilesInDirectory,
   saveNote,
+  renameNote,
 } from "./helpers/fileHandler";
 
 const bgColor = `rgba(255, 255, 255, .9)`;
@@ -44,23 +45,28 @@ const TrayAppContainer = styled.div`
   }
 `;
 
-interface IFile {
+export interface IAvailableNote {
   name: string;
+  path: string;
+}
+
+export interface INote extends IAvailableNote {
   data: string;
+  tags?: string[];
 }
 
 const Index = () => {
-  const [openNote, setOpenNote] = useState<IFile>();
-  const [files, setFiles] = useState<string[]>();
+  const [openNote, setOpenNote] = useState<INote>();
+  const [notes, setNotes] = useState<IAvailableNote[]>();
   const [folderPath, setFolderPath] = useState<string>(
     localStorage.getItem("folderPath")
   );
 
-  if (!files && folderPath) {
+  if (!notes && folderPath) {
     getFilesInDirectory(folderPath).then(
-      (files: string[]) => {
-        console.log("!files && folderPath", files);
-        setFiles(files);
+      (notes: IAvailableNote[]) => {
+        console.log("!Notes && folderPath", notes);
+        setNotes(notes);
       },
       (err) => {
         console.log("Error:", err);
@@ -72,9 +78,26 @@ const Index = () => {
     setFolderPath(newPath);
     localStorage.setItem("folderPath", newPath);
     getFilesInDirectory(newPath).then(
-      (files: string[]) => {
-        console.log("handlePathUpdate", files);
-        setFiles(files);
+      (notes: IAvailableNote[]) => {
+        console.log("handlePathUpdate", notes);
+        setNotes(notes);
+      },
+      (err) => {
+        console.log("Error:", err);
+      }
+    );
+  };
+
+  const getNote = (note: IAvailableNote) => {
+    console.log("getNote", note);
+    const { path, name } = note;
+    const noteFullPath = `${path.slice(-1) === "/" ? path : path + "/"}${name}`;
+    getFileByPath(noteFullPath).then(
+      (data: string) => {
+        setOpenNote({
+          ...note,
+          data,
+        });
       },
       (err) => {
         console.log("Error:", err);
@@ -83,16 +106,43 @@ const Index = () => {
   };
 
   const handleUpdateNote = (newData: string) => {
-    if (folderPath && openNote) saveNote(`${folderPath}${openNote}`, newData);
+    // Check if the title of the note has changed.
+    const titleMatch: RegExpMatchArray = newData.match(/(?<!#)#(?!#)(.*)/);
+    const title: string = (titleMatch && titleMatch[0]) || "";
+    const newFileName: string = title && `${title.replace("# ", "")}.md`;
+    if (
+      newFileName &&
+      newFileName != openNote.name &&
+      notes.map((n) => n.name).indexOf(newFileName) == -1
+    ) {
+      // If title changed, rename file
+      renameNote(
+        `${folderPath}${openNote.name}`,
+        `${folderPath}${newFileName}`
+      ).then(
+        () => {
+          // If rename success, Update file
+          saveNote(`${folderPath}${newFileName}`, newData);
+        },
+        (err) => console.log("Error:", err)
+      );
+    } else if (folderPath && openNote) {
+      saveNote(`${folderPath}${openNote.name}`, newData);
+    }
   };
 
   return (
     <TrayAppContainer>
       <NoteComponent
-        defaultValue={openNote?.data || "# Default"}
+        defaultValue={openNote?.data || "# New Note"}
         onNoteUpdate={handleUpdateNote}
       />
-      <MenuComponent onPathUpdated={handlePathUpdate} />
+      <MenuComponent
+        notes={notes}
+        onNoteSelect={getNote}
+        defaultPath={folderPath}
+        onPathUpdated={handlePathUpdate}
+      />
     </TrayAppContainer>
   );
 };
