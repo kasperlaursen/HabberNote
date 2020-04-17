@@ -41,7 +41,7 @@ const NoteComponent = ({ defaultValue, onNoteUpdate }: NoteComponentProps) => {
     // Since the state has been updated, set the cursor to the position from state
     setCaretPosition(noteFieldRef.current, cursorPos);
     const saveTimeout = setTimeout(() => {
-      const newNoteText: string = noteFieldRef.current.innerText;
+      const newNoteText: string = noteFieldRef?.current?.innerText;
       console.log("Saving", newNoteText);
       onNoteUpdate(newNoteText);
     }, saveDelay);

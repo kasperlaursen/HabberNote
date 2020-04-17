@@ -10,7 +10,7 @@ export interface ListComponentProps {
 
 const ListContainer = styled.div`
   max-height: 0vh;
-  margin: 0 -10px;
+  margin: 0 -5px;
   overflow: hidden;
   transition: max-height 0.3s, margin-bottom 0.3s;
   ${(props: { isExpanded: boolean }) => {
@@ -18,8 +18,8 @@ const ListContainer = styled.div`
       props.isExpanded &&
       ` max-height: 60vh; 
         overflow-y: auto;
-        margin-top: -10px;
-        margin-bottom: 10px;`
+        margin-top: -5px;
+        margin-bottom: 5px;`
     );
   }}
 `;

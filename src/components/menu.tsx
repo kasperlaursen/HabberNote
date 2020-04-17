@@ -2,7 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 import SettingsComponent from "./settings";
 import ListComponent from "./list";
-import { FiList } from "react-icons/fi";
+import { FiList, FiPlus } from "react-icons/fi";
 import { IAvailableNote } from "../react";
 
 const iconPadding = 5;
@@ -12,22 +12,33 @@ export interface MenuComponentProps {
   onNoteSelect: (note: IAvailableNote) => void;
   defaultPath: string;
   onPathUpdated: (newPath: string) => void;
+  onNewNote: () => void;
 }
 
 const Menu = styled.div`
-  padding: 10px;
+  padding: 5px;
   border-top: 1px solid rgba(0, 0, 0, 0.2);
   background-color: rgba(0, 0, 0, 0.05);
 `;
 
-const ListIconContainer = styled.div`
+const IconContainer = styled.div`
+  flex-shrink: 0;
   line-height: 0;
   font-size: ${iconSize}px;
-  padding: ${iconPadding}px;
+  & > svg {
+    margin: ${iconPadding}px;
+  }
 `;
 
 const StyledFiList = styled(FiList)`
-  flex-shrink: 0;
+  transition: transform 0.5s, color 0.3s ease-in-out;
+  cursor: pointer;
+  transition: color 0.3s;
+  &:hover {
+    color: #34a852;
+  }
+`;
+const StyledFiPlus = styled(FiPlus)`
   transition: transform 0.5s, color 0.3s ease-in-out;
   cursor: pointer;
   transition: color 0.3s;
@@ -46,6 +57,7 @@ const MenuComponent = ({
   onPathUpdated,
   onNoteSelect,
   defaultPath,
+  onNewNote,
 }: MenuComponentProps) => {
   const [showList, setShowList] = React.useState(false);
   const handleNoteSelect = (note: IAvailableNote) => {
@@ -60,9 +72,10 @@ const MenuComponent = ({
         onNoteSelect={handleNoteSelect}
       />
       <MenuIconsContainer>
-        <ListIconContainer onClick={() => setShowList(!showList)}>
-          <StyledFiList />
-        </ListIconContainer>
+        <IconContainer>
+          <StyledFiPlus onClick={onNewNote} />
+          <StyledFiList onClick={() => setShowList(!showList)} />
+        </IconContainer>
         <SettingsComponent
           onPathUpdated={onPathUpdated}
           defaultPath={defaultPath}

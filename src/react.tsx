@@ -62,24 +62,27 @@ const Index = () => {
     localStorage.getItem("folderPath")
   );
 
-  if (!notes && folderPath) {
+  const updateNotes = () => {
     getFilesInDirectory(folderPath).then(
       (notes: IAvailableNote[]) => {
-        console.log("!Notes && folderPath", notes);
         setNotes(notes);
       },
       (err) => {
         console.log("Error:", err);
       }
     );
+  };
+
+  if (!notes && folderPath) {
+    updateNotes();
   }
 
   const handlePathUpdate = (newPath: string) => {
-    setFolderPath(newPath);
-    localStorage.setItem("folderPath", newPath);
-    getFilesInDirectory(newPath).then(
+    const fixedNewPath = newPath.slice(-1) == "/" ? newPath : newPath + "/";
+    setFolderPath(fixedNewPath);
+    localStorage.setItem("folderPath", fixedNewPath);
+    getFilesInDirectory(fixedNewPath).then(
       (notes: IAvailableNote[]) => {
-        console.log("handlePathUpdate", notes);
         setNotes(notes);
       },
       (err) => {
@@ -89,10 +92,8 @@ const Index = () => {
   };
 
   const getNote = (note: IAvailableNote) => {
-    console.log("getNote", note);
     const { path, name } = note;
-    const noteFullPath = `${path.slice(-1) === "/" ? path : path + "/"}${name}`;
-    getFileByPath(noteFullPath).then(
+    getFileByPath(`${path}${name}`).then(
       (data: string) => {
         setOpenNote({
           ...note,
@@ -105,8 +106,13 @@ const Index = () => {
     );
   };
 
+  if (notes && !openNote) {
+    getNote(notes[0]);
+  }
+
   const handleUpdateNote = (newData: string) => {
     // Check if the title of the note has changed.
+    if (!newData) return;
     const titleMatch: RegExpMatchArray = newData.match(/(?<!#)#(?!#)(.*)/);
     const title: string = (titleMatch && titleMatch[0]) || "";
     const newFileName: string = title && `${title.replace("# ", "")}.md`;
@@ -123,12 +129,21 @@ const Index = () => {
         () => {
           // If rename success, Update file
           saveNote(`${folderPath}${newFileName}`, newData);
+          setOpenNote({ ...openNote, name: newFileName });
+          updateNotes();
         },
         (err) => console.log("Error:", err)
       );
     } else if (folderPath && openNote) {
       saveNote(`${folderPath}${openNote.name}`, newData);
+      updateNotes();
     }
+  };
+
+  const handleNewNote = () => {
+    console.log("handleNewNote");
+    setOpenNote({ path: folderPath, name: "New Note.md", data: "# New Note" });
+    console.log("handleNewNote", openNote);
   };
 
   return (
@@ -142,6 +157,7 @@ const Index = () => {
         onNoteSelect={getNote}
         defaultPath={folderPath}
         onPathUpdated={handlePathUpdate}
+        onNewNote={handleNewNote}
       />
     </TrayAppContainer>
   );

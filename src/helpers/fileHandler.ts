@@ -7,10 +7,12 @@ export const getFilesInDirectory = (
   return new Promise((res, rej) => {
     fs.readdir(folderPath, (err, files) => {
       if (err) rej(err);
-      const noteResults: IAvailableNote[] = files.map((f: string) => ({
-        name: f,
-        path: folderPath,
-      }));
+      const noteResults: IAvailableNote[] = files
+        .filter((f) => f.indexOf(".md") >= 0)
+        .map((f: string) => ({
+          name: f,
+          path: folderPath,
+        }));
       res(noteResults);
     });
   });
