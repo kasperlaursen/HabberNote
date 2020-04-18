@@ -52,7 +52,7 @@ const MenuIconsContainer = styled.div`
   justify-content: space-between;
 `;
 
-const MenuComponent = ({
+const MenuComponent: React.FC<MenuComponentProps> = ({
   notes,
   onPathUpdated,
   onNoteSelect,
@@ -60,7 +60,7 @@ const MenuComponent = ({
   onNewNote,
 }: MenuComponentProps) => {
   const [showList, setShowList] = React.useState(false);
-  const handleNoteSelect = (note: IAvailableNote) => {
+  const handleNoteSelect = (note: IAvailableNote): void => {
     setShowList(false);
     onNoteSelect(note);
   };
@@ -74,7 +74,7 @@ const MenuComponent = ({
       <MenuIconsContainer>
         <IconContainer>
           <StyledFiPlus onClick={onNewNote} />
-          <StyledFiList onClick={() => setShowList(!showList)} />
+          <StyledFiList onClick={(): void => setShowList(!showList)} />
         </IconContainer>
         <SettingsComponent
           onPathUpdated={onPathUpdated}

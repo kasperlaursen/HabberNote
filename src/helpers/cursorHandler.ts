@@ -4,12 +4,9 @@
  * @param element The html div element that the cursor is in
  * @param wasEnter Flag to determine if the last keypress was Enter
  */
-export const getCharacterOffset = (
-  element,
-  wasEnter: boolean
-): number => {
+export const getCharacterOffset = (element, wasEnter: boolean): number => {
   let start = 0;
-  let end = 0;
+  //let end = 0;
   const doc = element.ownerDocument || element.document;
   const win = doc.defaultView || doc.parentWindow;
   let sel;
@@ -22,16 +19,16 @@ export const getCharacterOffset = (
       preCaretRange.setEnd(range.startContainer, range.startOffset);
       start = preCaretRange.toString().length;
       preCaretRange.setEnd(range.endContainer, range.endOffset);
-      end = preCaretRange.toString().length;
+      //end = preCaretRange.toString().length;
     }
-  } else if ((sel = doc.selection) && sel.type != "Control") {
+  } else if ((sel = doc.selection) && sel.type !== "Control") {
     const textRange = sel.createRange();
     const preCaretTextRange = doc.body.createTextRange();
     preCaretTextRange.moveToElementText(element);
     preCaretTextRange.setEndPoint("EndToStart", textRange);
     start = preCaretTextRange.text.length;
     preCaretTextRange.setEndPoint("EndToEnd", textRange);
-    end = preCaretTextRange.text.length;
+    //end = preCaretTextRange.text.length;
   }
   // If the last keypress was Enter, add one to the position!
   return wasEnter ? start + 1 : start;
@@ -43,10 +40,10 @@ export const getCharacterOffset = (
  * @param element The element to set the position on.
  * @param pos The position to set the cursor at
  */
-export const setCaretPosition = (element, pos) => {
+export const setCaretPosition = (element, pos): number => {
   // Loop through all child nodes
-  for (let node of element.childNodes) {
-    if (node.nodeType == 3) {
+  for (const node of element.childNodes) {
+    if (node.nodeType === 3) {
       // we have a text node
       if (node.length >= pos) {
         // finally add our range
@@ -62,7 +59,7 @@ export const setCaretPosition = (element, pos) => {
       }
     } else {
       pos = setCaretPosition(node, pos);
-      if (pos == -1) {
+      if (pos === -1) {
         return -1; // no need to finish the for loop
       }
     }

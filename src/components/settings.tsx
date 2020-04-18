@@ -28,7 +28,7 @@ const SettingsContainer = styled.div`
     cursor: pointer;
   }
 
-  ${(props: { isActive: boolean }) => {
+  ${(props: { isActive: boolean }): string => {
     return (
       props.isActive &&
       `
@@ -50,7 +50,7 @@ const PathInput = styled.input`
   flex-grow: 1;
   flex-shrink: 1;
   background: transparent;
-  width: ${(props: { isActive: boolean }) => {
+  width: ${(props: { isActive: boolean }): string => {
     return props.isActive ? "auto" : "0";
   }};
 `;
@@ -60,7 +60,7 @@ const StyledFiSettings = styled(FiSettings)`
   transition: transform 0.5s, color 0.3s ease-in-out;
 `;
 
-const SettingsComponent = ({
+const SettingsComponent: React.FC<SettingsComponentProps> = ({
   defaultPath,
   onPathUpdated,
 }: SettingsComponentProps) => {
@@ -70,7 +70,7 @@ const SettingsComponent = ({
 
   const handleKeypressInInput = (
     event: React.KeyboardEvent<HTMLInputElement>
-  ) => {
+  ): void => {
     if (event.key === "Enter") {
       setIsActive(false);
       onPathUpdated(inputRef?.current?.value);
@@ -79,7 +79,7 @@ const SettingsComponent = ({
 
   const handleSettingsClick = (
     event: React.MouseEvent<SVGElement, MouseEvent>
-  ) => {
+  ): void => {
     if (!isActive) inputRef?.current?.focus();
     else onPathUpdated(inputRef?.current?.value);
     setIsActive(!isActive);

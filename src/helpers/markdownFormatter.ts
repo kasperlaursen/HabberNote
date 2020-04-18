@@ -1,10 +1,10 @@
-export interface markdownLookupObject {
+export interface MarkdownLookupObject {
   regex: RegExp;
   startTag: string;
   endTag: string;
 }
 
-const markdownLookup: markdownLookupObject[] = [
+const markdownLookup: MarkdownLookupObject[] = [
   {
     // Title
     regex: /(?<!#)#(?!#)(.*)/g,
@@ -52,7 +52,7 @@ const markdownLookup: markdownLookupObject[] = [
     regex: /\n[0-9]+\.(.*)/g,
     startTag: "<span class='number'>",
     endTag: "</span>",
-  }
+  },
 ];
 
 export const formatTextToMarkdown = (text: string): string => {

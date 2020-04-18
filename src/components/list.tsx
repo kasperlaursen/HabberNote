@@ -13,10 +13,10 @@ const ListContainer = styled.div`
   margin: 0 -5px;
   overflow: hidden;
   transition: max-height 0.3s, margin-bottom 0.3s;
-  ${(props: { isExpanded: boolean }) => {
+  ${(props: { isExpanded: boolean }): string => {
     return (
       props.isExpanded &&
-      ` max-height: 60vh; 
+      ` max-height: 60vh;
         overflow-y: auto;
         margin-top: -5px;
         margin-bottom: 5px;`
@@ -37,7 +37,7 @@ const ListItem = styled.div`
   }
 `;
 
-const ListComponent = ({
+const ListComponent: React.FC<ListComponentProps> = ({
   notes,
   isExpanded,
   onNoteSelect,
@@ -45,7 +45,7 @@ const ListComponent = ({
   return (
     <ListContainer isExpanded={isExpanded}>
       {notes?.map((n) => (
-        <ListItem key={n.name} onClick={() => onNoteSelect(n)}>
+        <ListItem key={n.name} onClick={(): void => onNoteSelect(n)}>
           {n.name}
         </ListItem>
       ))}

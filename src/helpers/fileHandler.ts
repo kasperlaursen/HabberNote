@@ -29,7 +29,7 @@ export const getFileByPath = (
   });
 };
 
-export const saveNote = (filePath: string, newData: string) => {
+export const saveNote = (filePath: string, newData: string): void => {
   fs.writeFile(filePath, newData, "utf8", function (err) {
     if (err) return console.log(err);
   });
