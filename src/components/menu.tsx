@@ -1,9 +1,10 @@
-import * as React from "react";
-import styled from "styled-components";
-import SettingsComponent from "./settings";
-import ListComponent from "./list";
-import { FiList, FiPlus } from "react-icons/fi";
-import { IAvailableNote } from "../react";
+import * as React from 'react';
+import styled from 'styled-components';
+import { FiList, FiPlus, FiActivity } from 'react-icons/fi';
+import ListComponent from './list';
+import { IAvailableNote } from '../react';
+
+import SettingsComponent from './settings';
 
 const iconPadding = 5;
 const iconSize = 16;

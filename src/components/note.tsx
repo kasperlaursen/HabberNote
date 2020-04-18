@@ -1,11 +1,8 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
-import styled from "styled-components";
-import {
-  formatTextToMarkdown,
-  formatMarkdownToText,
-} from "../helpers/markdownFormatter";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { formatTextToMarkdown } from '../helpers/markdownFormatter';
 
-import { getCharacterOffset, setCaretPosition } from "../helpers/cursorHandler";
+import { getCharacterOffset, setCaretPosition } from '../helpers/cursorHandler';
 
 export interface NoteComponentProps {
   defaultValue: string;
@@ -29,12 +26,12 @@ const saveDelay: number = 2 * 1000;
 
 const NoteComponent = ({ defaultValue, onNoteUpdate }: NoteComponentProps) => {
   // State
-  const [note, setNote] = useState(formatTextToMarkdown(""));
+  const [note, setNote] = useState(formatTextToMarkdown(''));
   const [cursorPos, setCursorPos] = useState(0);
   const [wasEnter, setWasEnter] = useState(false);
 
   // Reference to the Editable div, used to set the cursor position later!
-  let noteFieldRef: React.RefObject<HTMLDivElement> = React.createRef();
+  const noteFieldRef: React.RefObject<HTMLDivElement> = React.createRef();
 
   // Whenever the note state changes, set the cursor position in the text field
   useEffect(() => {
@@ -42,7 +39,6 @@ const NoteComponent = ({ defaultValue, onNoteUpdate }: NoteComponentProps) => {
     setCaretPosition(noteFieldRef.current, cursorPos);
     const saveTimeout = setTimeout(() => {
       const newNoteText: string = noteFieldRef?.current?.innerText;
-      console.log("Saving", newNoteText);
       onNoteUpdate(newNoteText);
     }, saveDelay);
     return () => clearTimeout(saveTimeout);
@@ -56,21 +52,26 @@ const NoteComponent = ({ defaultValue, onNoteUpdate }: NoteComponentProps) => {
    * @param event The react form event for onInput
    */
   const handleChange = (event: React.FormEvent<HTMLDivElement>) => {
-    const inputElement: HTMLDivElement = event.currentTarget; // The element that triggered the event
-    const inputText: string = inputElement.innerText; // The inner text of the element
-    setCursorPos(getCharacterOffset(inputElement, wasEnter)); // Get the cursors position in the field, and save it to state
-    setWasEnter(false); // Disable the return key flag after use
-    setNote(formatTextToMarkdown(inputText)); // Format the raw text with html tags, and update state
+    // The element that triggered the event
+    const inputElement: HTMLDivElement = event.currentTarget;
+    // The inner text of the element
+    const inputText: string = inputElement.innerText;
+    // Get the cursors position in the field, and save it to state
+    setCursorPos(getCharacterOffset(inputElement, wasEnter));
+    // Disable the return key flag after use
+    setWasEnter(false);
+    // Format the raw text with html tags, and update state
+    setNote(formatTextToMarkdown(inputText));
   };
 
   /**
-   * Handles any Return keypress, bu setting a flag in state.
+   * Handles any Return keypress, bu setting a flag in state
    * This flag is then used to fix the cursor position after the markdown formatter is done.
    * @param event The react keyboard event triggered
    */
   const handleReturnKey = (event: React.KeyboardEvent<HTMLDivElement>) => {
     // If the pressed key was enter, and shift was not held
-    if (event.key === "Enter" && event.shiftKey == false) {
+    if (event.key === 'Enter' && event.shiftKey === false) {
       // Set the enter flag to true in state
       setWasEnter(true);
     }
@@ -83,7 +84,7 @@ const NoteComponent = ({ defaultValue, onNoteUpdate }: NoteComponentProps) => {
       contentEditable="true"
       onInput={handleChange}
       dangerouslySetInnerHTML={{ __html: note }}
-    ></Note>
+    />
   );
 };
 

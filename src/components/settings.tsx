@@ -1,6 +1,6 @@
-import * as React from "react";
-import styled from "styled-components";
-import { FiSettings } from "react-icons/fi";
+import * as React from 'react';
+import styled from 'styled-components';
+import { FiSettings, FiActivity } from 'react-icons/fi';
 export interface SettingsComponentProps {
   defaultPath: string;
   onPathUpdated: (newPath: string) => void;
@@ -51,7 +51,7 @@ const PathInput = styled.input`
   flex-shrink: 1;
   background: transparent;
   width: ${(props: { isActive: boolean }) => {
-    return props.isActive ? "auto" : "0";
+    return props.isActive ? 'auto' : '0';
   }};
 `;
 
@@ -71,7 +71,7 @@ const SettingsComponent = ({
   const handleKeypressInInput = (
     event: React.KeyboardEvent<HTMLInputElement>
   ) => {
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
       setIsActive(false);
       onPathUpdated(inputRef?.current?.value);
     }
